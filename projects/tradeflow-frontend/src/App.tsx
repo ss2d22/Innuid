@@ -1,5 +1,6 @@
 import { SupportedWallet, WalletId, WalletManager, WalletProvider } from '@txnlab/use-wallet-react'
 import { SnackbarProvider } from 'notistack'
+import { ThemeProvider } from './contexts/ThemeContext'
 import Home from './Home'
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
 
@@ -47,10 +48,12 @@ export default function App() {
   })
 
   return (
-    <SnackbarProvider maxSnack={3}>
-      <WalletProvider manager={walletManager}>
-        <Home />
-      </WalletProvider>
-    </SnackbarProvider>
+    <ThemeProvider>
+      <SnackbarProvider maxSnack={3}>
+        <WalletProvider manager={walletManager}>
+          <Home />
+        </WalletProvider>
+      </SnackbarProvider>
+    </ThemeProvider>
   )
 }
