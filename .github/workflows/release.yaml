@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.idea/**'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  tradeflow-contracts-validate:
+    name: Run tradeflow-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/tradeflow-contracts-ci.yaml
+
+  tradeflow-contracts-release:
+    name: Run tradeflow-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/tradeflow-contracts-cd.yaml
+    needs: tradeflow-contracts-validate
+
+  tradeflow-frontend-validate:
+    name: Run tradeflow-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/tradeflow-frontend-ci.yaml
+
+  tradeflow-frontend-release:
+    name: Run tradeflow-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/tradeflow-frontend-cd.yaml
+    needs: tradeflow-frontend-validate

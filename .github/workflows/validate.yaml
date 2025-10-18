@@ -1,0 +1,14 @@
+name: Pull Request validation
+
+on: [pull_request]
+
+
+jobs:
+  tradeflow-contracts-ci:
+    name: Run tradeflow-contracts validation
+    uses: ./.github/workflows/tradeflow-contracts-ci.yaml
+
+  tradeflow-frontend-ci:
+    name: Run tradeflow-frontend validation
+    uses: ./.github/workflows/tradeflow-frontend-ci.yaml
+
