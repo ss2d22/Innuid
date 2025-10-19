@@ -368,7 +368,11 @@ Innuid/
 ---
 
 ## 🎬 app walkthrough
-> 🎥 **[WATCH TECHNICAL WALKTHROUGH - Coming Soon]**
+
+
+https://github.com/user-attachments/assets/8992fbcc-bee9-4d97-add8-9e4781691fdb
+
+
 
 ---
 
