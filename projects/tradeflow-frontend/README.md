@@ -78,7 +78,6 @@ For Vercel:
 5. Inside GitHub, add `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` as [secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
 6. Create an .env file containing ENV vars for the project (pointing to testnet or mainnet), drag and drop the .env file to upload initial batch of default environment variables to your vercel project.
 7. Upon invocation, CD pipeline will pull the VITE_ prefixed environment variables, build the project and deploy to the specified environment.
-
 For Netlify:
 1. Retrieve your [Netlify Access Token](https://docs.netlify.com/cli/get-started/#obtain-a-token-in-the-netlify-ui)
 2. Inside your folder run `netlify login`
