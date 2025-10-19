@@ -110,6 +110,8 @@ export default function Home() {
   const [investAmount, setInvestAmount] = useState('')
   const [viewInvoiceId, setViewInvoiceId] = useState('')
   const [myInvestment, setMyInvestment] = useState<bigint | null>(null)
+  const [pendingInvoices, setPendingInvoices] = useState<Invoice[]>([])
+  const [loadingApprovals, setLoadingApprovals] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -191,6 +193,7 @@ export default function Home() {
       })
       setSuccess(`Invoice ${invoiceId} approved!`)
       await loadInvoices()
+      await loadPendingInvoices()
     } catch (err) {
       const error = err as Error
       setError(`Failed to approve: ${error.message}`)
@@ -339,6 +342,46 @@ export default function Home() {
     }
   }
 
+  const loadPendingInvoices = async () => {
+    if (!activeAddress) return
+
+    setLoadingApprovals(true)
+    try {
+      const client = getClient()
+      const pending: Invoice[] = []
+
+      for (let i = 0; i < 20; i++) {
+        try {
+          const info = await client.send.getInvoiceInfo({
+            args: { invoiceId: BigInt(i) },
+          })
+
+          const [seller, buyer, totalAmount, amountRaised, status] = info.return!
+
+          // Only show pending invoices where I am the buyer
+          if (Number(status) === 0 && buyer === activeAddress) {
+            pending.push({
+              id: i,
+              seller,
+              buyer,
+              totalAmount,
+              amountRaised,
+              status: Number(status),
+            })
+          }
+        } catch {
+          break
+        }
+      }
+
+      setPendingInvoices(pending)
+    } catch (err) {
+      console.error('Failed to load pending invoices:', err)
+    } finally {
+      setLoadingApprovals(false)
+    }
+  }
+
   const checkMyInvestment = async () => {
     if (!viewInvoiceId || !activeAddress) return
 
@@ -359,6 +402,7 @@ export default function Home() {
   useEffect(() => {
     if (activeAddress && appId) {
       loadInvoices()
+      loadPendingInvoices()
     }
   }, [activeAddress, appId])
 
@@ -702,6 +746,39 @@ export default function Home() {
                   <div className="p-4 bg-muted rounded-lg">
                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Your investment</p>
                     <p className="text-xl font-bold text-foreground">{(Number(myInvestment) / 1_000_000).toFixed(6)} ALGO</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+              <div className="px-6 py-5 border-b border-border">
+                <h2 className="text-lg font-semibold text-foreground">Pending Approvals</h2>
+              </div>
+              <div className="p-6">
+                {pendingInvoices.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">No pending invoices</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingInvoices.map((invoice) => (
+                      <div key={invoice.id} className="border border-border rounded-lg p-4 flex justify-between items-center gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-foreground text-sm">Invoice #{invoice.id}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {(Number(invoice.totalAmount) / 1_000_000).toFixed(2)} ALGO from {invoice.seller.slice(0, 8)}...
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleApproveInvoice(invoice.id)}
+                          disabled={loading}
+                          className="flex-shrink-0 bg-foreground text-background px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity text-sm font-medium whitespace-nowrap"
+                        >
+                          Approve
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
