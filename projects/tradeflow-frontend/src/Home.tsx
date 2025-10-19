@@ -618,7 +618,7 @@ export default function Home() {
               <rect width="100" height="100" fill="white" mask="url(#rounded-slashes-mask)" />
             </svg>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Settle Invoice</h1>
+              <h1 className="text-xl font-bold text-foreground">Innuid</h1>
               {appId > 0 && <p className="text-xs text-muted-foreground">App ID: {appId}</p>}
             </div>
           </div>

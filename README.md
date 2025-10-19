@@ -120,7 +120,7 @@
 
 ### 📍 Deployed Contract
 
-**TestNet Application ID**: `748002191`  
+**TestNet Application ID**: `748002191`
 **Explorer Link**: [View on Lora Explorer](https://lora.algokit.io/testnet/application/748002191)
 
 ### 🎯 How The Smart Contract Works
@@ -170,9 +170,9 @@ const INVOICE_PAID = Uint64(3)     // Paid by buyer, ready for claims
 ```
 @abimethod()
 createInvoice(
-  buyer: Address, 
-  totalAmount: UintN64, 
-  minInvestment: UintN64, 
+  buyer: Address,
+  totalAmount: UintN64,
+  minInvestment: UintN64,
   dueDate: UintN64
 ): UintN64
 ```
@@ -352,7 +352,7 @@ itxn.payment({
 
 ### **5. Instant Finality: Real-Time Operations**
 
-**Algorand:** 3.3 second blocks with immediate finality  
+**Algorand:** 3.3 second blocks with immediate finality
 **Result:** Complete invoice flow in <30 seconds
 
 **Compare to:**
@@ -426,7 +426,7 @@ Innuid/
 ## 🎬 Detailed Walkthrough Video
 
 > 🎥 **[WATCH TECHNICAL WALKTHROUGH - Coming Soon]**
-> 
+>
 > This video covers:
 > - Complete project architecture
 > - Smart contract implementation deep-dive
@@ -562,7 +562,7 @@ it('Creates invoice with correct initial state', () => {
     new UintN64(5_000_000),
     new UintN64(1735689600)
   )
-  
+
   expect(invoiceId.native).toEqual(Uint64(0))
 })
 ```
@@ -788,9 +788,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Developer**: [Your Name]
-- **Contact**: [Your Email/Discord]
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Developers**: Sriram Sundar + Rudrrayan Manna
+- **Contacts**: ss2d22@soton.ac.uk + rudrrayan@mgmail.com
+- **GitHubs**: [@Sriram](https://github.com/ss2d22) [@Rudrrayan](https://github.com/ron0studios)
 
 ---
 
@@ -826,7 +826,7 @@ For questions, issues, or suggestions:
 <div align="center">
   <h3>Built with ❤️ on Algorand</h3>
   <p>Empowering businesses and investors through decentralized finance</p>
-  
+
   <p>
     <a href="https://lora.algokit.io/testnet/application/748002191">View Contract on Explorer</a>
     ·
