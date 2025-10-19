@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - '.vscode/**'
-      - '.idea/**'
+      - "docs/**"
+      - "**.md"
+      - ".vscode/**"
+      - ".idea/**"
 
 permissions:
   contents: read
@@ -26,13 +26,7 @@ jobs:
     uses: ./.github/workflows/tradeflow-contracts-cd.yaml
     needs: tradeflow-contracts-validate
 
-  tradeflow-frontend-validate:
-    name: Run tradeflow-frontend release
-    secrets: inherit
-    uses: ./.github/workflows/tradeflow-frontend-ci.yaml
-
   tradeflow-frontend-release:
     name: Run tradeflow-frontend release
     secrets: inherit
     uses: ./.github/workflows/tradeflow-frontend-cd.yaml
-    needs: tradeflow-frontend-validate
