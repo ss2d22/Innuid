@@ -1,3 +1,4 @@
+
 <div align="center">
   <h1>💰 Innuid</h1>
   <p>Decentralized Invoice Factoring Platform on Algorand</p>
@@ -18,23 +19,23 @@
 
 ## 📺 Demo Video
 
-> 🎬 **[WATCH DEMO VIDEO HERE - Coming Soon]**
+> 🎬 **[WATCH DEMO VIDEO HERE]**
+
+
+[<img src="https://img.youtube.com/vi/1XF7Iokt0PI/hqdefault.jpg" width="560" height="315"
+/>](https://www.youtube.com/embed/1XF7Iokt0PI?si=_5zMi9GBvGkADXXc)
 
 ---
 
 ## 🖼️ Screenshots
 
 ### Dashboard View
-![Dashboard Screenshot - Coming Soon](#)
+<img width="1202" height="1031" alt="image" src="https://github.com/user-attachments/assets/7c43a13e-2597-488e-bf71-6a79c75e525b" />
+
 
 ### Invoice Creation
-![Invoice Creation Screenshot - Coming Soon](#)
+<img width="402" height="541" alt="image" src="https://github.com/user-attachments/assets/e7e8653d-239f-4d57-95c9-4388374fd5e4" />
 
-### Investment Interface
-![Investment Interface Screenshot - Coming Soon](#)
-
-### Payout Claims
-![Payout Claims Screenshot - Coming Soon](#)
 
 ---
 
@@ -49,34 +50,6 @@
 - 💸 Traditional factoring costs 3-5% in fees
 - 🏦 Banks require lengthy applications and collateral
 - 🚫 Limited access for small/new businesses
-
-**For Individual Investors:**
-- 💰 Invoice factoring typically requires $100K+ minimums
-- 🏛️ Only accessible to institutional investors
-- 📊 Opaque pricing and settlement processes
-- ⏳ Long settlement times
-
-**Innuid's Solution:**
-- ⚡ Instant liquidity for businesses
-- 📉 Near-zero platform fees (only blockchain transaction costs)
-- 🎯 Fractional investing from as little as 5 ALGO (~$0.50)
-- 🔍 Complete transparency via blockchain
-- 🤖 Automated settlement with smart contracts
-
----
-
-## 🌟 Key Features
-
-- 📝 **Invoice Creation & Verification**: Businesses create invoices that buyers verify on-chain
-- 💎 **Fractional Ownership**: Investors can fund invoices with investments as small as 5 ALGO
-- ⚡ **Instant Settlement**: Sellers receive cash immediately when invoices are fully funded
-- 🔒 **Trustless Escrow**: Smart contracts hold and distribute funds automatically
-- 📊 **Transparent Status Tracking**: All invoice states are visible on-chain
-- 🎯 **Risk Mitigation**: Buyer approval required before investment begins
-- 💸 **Autonomous Payouts**: Investors claim returns directly from the smart contract
-- 🔐 **Secure & Auditable**: All transactions recorded on Algorand blockchain
-
----
 
 ## 🏗️ Architecture
 
@@ -352,43 +325,14 @@ itxn.payment({
 
 ### **5. Instant Finality: Real-Time Operations**
 
-**Algorand:** 3.3 second blocks with immediate finality
-**Result:** Complete invoice flow in <30 seconds
+**Algorand:** 2.6 second blocks with immediate finality
+**Result:** Complete invoice flow really fast
 
 **Compare to:**
 - Ethereum: 12-15 seconds + reorg risk (wait 6-12 blocks)
 - Bitcoin: 10 minutes + wait for confirmations
 - Traditional finance: 3-5 business days
 
----
-
-## 🛠️ Technologies
-
-### **Smart Contract**
-- **Algorand TypeScript** - High-level smart contract language
-- **PuyaTS Compiler** - Optimizing compiler to TEAL bytecode
-- **AlgoKit** - Development framework
-- **Vitest** - Unit and E2E testing
-
-### **Frontend**
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **shadcn/ui** - Component library
-- **Tailwind CSS** - Utility-first styling
-- **Radix UI** - Accessible component primitives
-
-### **Algorand Integration**
-- **AlgoKit Utils TypeScript** - Blockchain interaction library
-- **Typed Application Clients** - Auto-generated from smart contract
-- **AlgorandClient** - Unified SDK interface
-
-### **Development Tools**
-- **ESLint** - Code quality
-- **Prettier** - Code formatting
-- **Git** - Version control
-
----
 
 ## 📁 Project Structure
 
@@ -423,18 +367,8 @@ Innuid/
 
 ---
 
-## 🎬 Detailed Walkthrough Video
-
+## 🎬 app walkthrough
 > 🎥 **[WATCH TECHNICAL WALKTHROUGH - Coming Soon]**
->
-> This video covers:
-> - Complete project architecture
-> - Smart contract implementation deep-dive
-> - Frontend integration with typed clients
-> - Live demo on TestNet
-> - Code walkthrough
-> - Deployment process
-> - Testing methodology
 
 ---
 
@@ -644,122 +578,18 @@ const result = await appClient.send.claimPayout({
 
 ---
 
-## 📊 Example Scenario
-
-**Invoice Details:**
-- Seller: Small manufacturing company
-- Buyer: Large retailer (verified)
-- Amount: 100 ALGO ($100)
-- Due Date: 30 days
-- Discount Rate: 5% (investors get 105 ALGO)
-- Min Investment: 5 ALGO
-
-**Timeline:**
-
-| Day | Event | Actor | Transaction |
-|-----|-------|-------|-------------|
-| 0 | Create invoice | Seller | 0.001 ALGO fee |
-| 0 | Approve invoice | Buyer | 0.001 ALGO fee |
-| 0 | Invest 60 ALGO | Alice | 60.001 ALGO |
-| 0 | Invest 40 ALGO | Bob | 40.001 ALGO |
-| 0 | **Seller receives 100 ALGO** | - | Instant |
-| 30 | Pay 105 ALGO to contract | Buyer | 105.001 ALGO |
-| 30 | Claim 63 ALGO | Alice | 0.001 fee, receives 63 |
-| 30 | Claim 42 ALGO | Bob | 0.001 fee, receives 42 |
-
-**Returns:**
-- Alice: +5% in 30 days (60% APY)
-- Bob: +5% in 30 days (60% APY)
-- Seller: Instant cash instead of 30-day wait
-- Total platform fees: **0 ALGO** (only blockchain tx costs)
-
----
-
-## 🔒 Security Considerations
-
-### Audit Status
-⚠️ **Not yet audited** - This is a proof-of-concept. Do not use with real funds on MainNet.
-
-### Security Features
-
-**1. Double-Claim Prevention**
-```
-assert(invested > Uint64(0), 'Already claimed or no investment')
-// Investment set to 0 after claim
-this.investments(key).value = Uint64(0)
-```
-
-**2. Authorization Checks**
-```
-assert(Txn.sender === buyer, 'Only buyer can approve')
-assert(Txn.sender === seller, 'Only seller can create')
-```
-
-**3. Atomic Guarantees**
-```
-assert(Global.groupSize === Uint64(2), 'Must be grouped')
-// Payment and recording happen atomically
-```
-
-**4. State Validation**
-```
-assert(status === INVOICE_ACTIVE, 'Invoice not active')
-assert(payment.amount >= minInvestment, 'Below minimum')
-```
-
-**5. No Reentrancy**
-TEAL's execution model prevents reentrancy attacks by design.
-
----
-
 ## 🌍 Deployed Application
 
 **TestNet Deployment:**
 - **Application ID**: 748002191
 - **Block Explorer**: [View on Lora](https://lora.algokit.io/testnet/application/748002191)
-- **Frontend URL**: Coming Soon
+- **Frontend URL**: httpd://www.inuid.org
 
 **Contract State:**
 - Global State: 1 variable (`nextInvoiceId`)
 - Box Storage: Dynamic allocation
 - Total Deployed Size: ~2KB
 
----
-
-## 🗺️ Roadmap
-
-### Phase 1: Core Functionality ✅
-- [x] Smart contract development
-- [x] Box storage implementation
-- [x] Atomic transaction flows
-- [x] Inner transaction payouts
-- [x] Unit test coverage
-- [x] E2E test coverage
-- [x] TestNet deployment
-
-### Phase 2: Enhanced Features 🚧
-- [ ] Frontend UI implementation
-- [ ] Wallet integration (Pera, Defly)
-- [ ] Invoice search and filtering
-- [ ] Historical performance metrics
-- [ ] Email notifications
-
-### Phase 3: Advanced Features 🔮
-- [ ] Oracle integration for payment verification
-- [ ] Multi-currency support (stablecoins)
-- [ ] Reputation system for buyers/sellers
-- [ ] Insurance pools for default protection
-- [ ] DAO governance for platform parameters
-- [ ] Mobile app (React Native)
-
-### Phase 4: Ecosystem 🌐
-- [ ] Professional audit
-- [ ] MainNet deployment
-- [ ] API for third-party integrations
-- [ ] Analytics dashboard
-- [ ] Educational resources
-
----
 
 ## 🤝 Contributing
 
@@ -798,7 +628,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Algorand Foundation** - For the incredible blockchain platform
 - **AlgoKit Team** - For the development framework
-- **PuyaTS** - For the TypeScript-to-TEAL compiler
 - **shadcn/ui** - For the beautiful component library
 
 ---
