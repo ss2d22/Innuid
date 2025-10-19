@@ -465,7 +465,7 @@ pipx install algokit
 **2. Clone the Repository**
 
 ```
-git clone https://github.com/yourusername/Innuid.git
+git clone https://github.com/ss2d22/Innuid.git
 cd Innuid
 ```
 
@@ -817,9 +817,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions, issues, or suggestions:
 
-- Open an issue on [GitHub Issues](https://github.com/yourusername/Innuid/issues)
+- Open an issue on [GitHub Issues](https://github.com/ss2d22/Innuid/issues)
 - Join the [Algorand Discord](https://discord.gg/algorand)
-- Contact me directly: [your-contact]
+- Contact us directly: [@Sriram](https://github.com/ss2d22) [@Rudrrayan](https://github.com/ron0studios)
 
 ---
 
@@ -832,8 +832,8 @@ For questions, issues, or suggestions:
     ·
     <a href="#demo-video">Watch Demo</a>
     ·
-    <a href="https://github.com/yourusername/Innuid/issues">Report Bug</a>
+    <a href="https://github.com/ss2d22/Innuid/issues">Report Bug</a>
     ·
-    <a href="https://github.com/yourusername/Innuid/issues">Request Feature</a>
+    <a href="https://github.com/ss2d22/Innuid/issues">Request Feature</a>
   </p>
 </div>
