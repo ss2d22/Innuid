@@ -20,7 +20,6 @@ command = "npm run deploy:ci"
 [project.deploy.testnet]
 environment_secrets = [
   "DEPLOYER_MNEMONIC",
-  "DISPENSER_MNEMONIC",
 ]
 
 [project.deploy.mainnet]
