@@ -7,9 +7,16 @@ import algosdk from 'algosdk'
 import { AlertCircle, CheckCircle2, DollarSign, FileText, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from './components/ThemeToggle'
-import { BuyerAddressComboBox } from './components/BuyerAddressComboBox'
 import { TradeflowClient } from './contracts/Tradeflow'
 import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
+
+import * as React from 'react'
+import { frameworks } from './constants'
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 const INVOICE_STATUS = {
   0: { label: 'PENDING', color: 'yellow' },
@@ -112,6 +119,8 @@ export default function Home() {
   const [myInvestment, setMyInvestment] = useState<bigint | null>(null)
   const [pendingInvoices, setPendingInvoices] = useState<Invoice[]>([])
   const [loadingApprovals, setLoadingApprovals] = useState(false)
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState('')
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -661,7 +670,40 @@ export default function Home() {
               <div className="p-6 space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Buyer Address</label>
-                  <BuyerAddressComboBox />
+
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+                        {value ? frameworks.find((framework) => framework.value === value)?.label : 'Select Buyer address...'}
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full22 p-0">
+                      <Command>
+                        <CommandInput placeholder="Search Buyer..." />
+                        <CommandList>
+                          <CommandEmpty>No framework found.</CommandEmpty>
+                          <CommandGroup>
+                            {frameworks.map((framework) => (
+                              <CommandItem
+                                key={framework.value}
+                                value={framework.value}
+                                onSelect={(currentValue) => {
+                                  setValue(currentValue === value ? '' : currentValue)
+                                  setBuyer('MRGZLGYXTUAELYRMMTHJK5ONMLAXFLSZPHRFMMH77WE5X2CGLA4TFW3LFE')
+                                  setOpen(false)
+                                }}
+                              >
+                                <CheckIcon className={cn('mr-2 h-4 w-4', value === framework.value ? 'opacity-100' : 'opacity-0')} />
+                                {framework.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+
                   {/*
                   <input
                     type="text"
