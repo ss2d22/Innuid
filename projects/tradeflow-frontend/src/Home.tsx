@@ -4,7 +4,7 @@ import { AlgorandClient } from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { useWallet } from '@txnlab/use-wallet-react'
 import algosdk from 'algosdk'
-import { AlertCircle, CheckCircle2, DollarSign, FileText, TrendingUp, Wallet } from 'lucide-react'
+import { AlertCircle, CheckCircle2, DollarSign, FileText, TrendingUp, Wallet, HelpCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from './components/ThemeToggle'
 import { TradeflowClient } from './contracts/Tradeflow'
@@ -124,9 +124,47 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [details, setDetails] = useState('')
   const [success, setSuccess] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const INVOICES_PER_PAGE = 4
+
+  const HELP_CONTENT = {
+    allInvoices: {
+      title: 'All Invoices',
+      steps: [
+        { step: 'Create', desc: 'Seller creates invoice with buyer details' },
+        { step: 'Approve', desc: 'Buyer approves the invoice' },
+        { step: 'Fund', desc: 'Investors fund the invoice, seller gets paid' },
+        { step: 'Settle', desc: 'Buyer pays the full amount at due date' },
+        { step: 'Claim', desc: 'Investors claim their returns' },
+      ],
+    },
+    createInvoice: {
+      title: 'Create Invoice',
+      content: 'As a seller, enter invoice details. The buyer must approve before investors can fund it.',
+    },
+    checkInvestment: {
+      title: 'Check Investment',
+      content: 'Enter an invoice ID to see how much you have invested in that particular invoice.',
+    },
+    pendingApprovals: {
+      title: 'Pending Approvals',
+      content: 'Review invoices sent to you for approval. Only approved invoices can be funded by investors.',
+    },
+  }
 
   const appId = Number(import.meta.env.VITE_APP_ID || 0)
+
+  const getPaginatedInvoices = () => {
+    const startIdx = (currentPage - 1) * INVOICES_PER_PAGE
+    const endIdx = startIdx + INVOICES_PER_PAGE
+    return invoices.slice(startIdx, endIdx)
+  }
+
+  const getTotalPages = () => {
+    return Math.ceil(invoices.length / INVOICES_PER_PAGE)
+  }
 
   const getAlgorandClient = () => {
     const algodConfig = getAlgodConfigFromViteEnvironment()
@@ -155,6 +193,7 @@ export default function Home() {
 
   const handleCreateInvoice = async () => {
     setError('')
+    setDetails('')
     setSuccess('')
 
     if (!buyer || !totalAmount || !minInvestment) {
@@ -184,7 +223,8 @@ export default function Home() {
       await loadInvoices()
     } catch (err) {
       const error = err as Error
-      setError(`Failed to create invoice: ${error.message}`)
+      setError(`Failed to create invoice`)
+      setDetails(error.message)
     } finally {
       setLoading(false)
     }
@@ -192,6 +232,7 @@ export default function Home() {
 
   const handleApproveInvoice = async (invoiceId: number) => {
     setError('')
+    setDetails('')
     setSuccess('')
     setLoading(true)
 
@@ -205,7 +246,8 @@ export default function Home() {
       await loadPendingInvoices()
     } catch (err) {
       const error = err as Error
-      setError(`Failed to approve: ${error.message}`)
+      setError(`Failed to approve invoice`)
+      setDetails(error.message)
     } finally {
       setLoading(false)
     }
@@ -213,6 +255,7 @@ export default function Home() {
 
   const handleInvest = async (invoiceId: number) => {
     setError('')
+    setDetails('')
     setSuccess('')
     setLoading(true)
 
@@ -249,7 +292,8 @@ export default function Home() {
       await loadInvoices()
     } catch (err) {
       const error = err as Error
-      setError(`Failed to invest: ${error.message}`)
+      setError(`Failed to invest in invoice`)
+      setDetails(error.message)
     } finally {
       setLoading(false)
     }
@@ -257,6 +301,7 @@ export default function Home() {
 
   const handlePayInvoice = async (invoiceId: number) => {
     setError('')
+    setDetails('')
     setSuccess('')
     setLoading(true)
 
@@ -289,7 +334,8 @@ export default function Home() {
       await loadInvoices()
     } catch (err) {
       const error = err as Error
-      setError(`Failed to pay invoice: ${error.message}`)
+      setError(`Failed to pay invoice`)
+      setDetails(error.message)
     } finally {
       setLoading(false)
     }
@@ -297,6 +343,7 @@ export default function Home() {
 
   const handleClaimPayout = async (invoiceId: number) => {
     setError('')
+    setDetails('')
     setSuccess('')
     setLoading(true)
 
@@ -310,7 +357,8 @@ export default function Home() {
       await loadInvoices()
     } catch (err) {
       const error = err as Error
-      setError(`Failed to claim payout: ${error.message}`)
+      setError(`Failed to claim payout`)
+      setDetails(error.message)
     } finally {
       setLoading(false)
     }
@@ -318,6 +366,7 @@ export default function Home() {
 
   const loadInvoices = async () => {
     if (!activeAddress) return
+    setCurrentPage(1)
 
     try {
       const client = getClient()
@@ -473,14 +522,103 @@ export default function Home() {
     )
   }
 
+  const PaginationControls = () => {
+    const totalPages = getTotalPages()
+    if (totalPages <= 1) return null
+
+    return (
+      <div className="flex items-center justify-center gap-2 pt-4 border-t border-border">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          ← Prev
+        </button>
+
+        <div className="flex gap-1">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                currentPage === page ? 'bg-foreground text-background' : 'border border-border hover:bg-accent'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-2 text-sm rounded-lg border border-border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Next →
+        </button>
+      </div>
+    )
+  }
+
+  const HelpButton = ({ contentKey }: { contentKey: keyof typeof HELP_CONTENT }) => {
+    const [open, setOpen] = useState(false)
+    const content = HELP_CONTENT[contentKey]
+    const isSteps = 'steps' in content
+
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button className="p-1.5 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
+            <HelpCircle className="h-4 w-4" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64 p-4">
+          <div className="space-y-3">
+            <h3 className="font-semibold text-foreground text-sm">{content.title}</h3>
+            {isSteps ? (
+              <ol className="space-y-2 text-xs">
+                {content.steps.map((item, idx) => (
+                  <li key={idx} className="flex gap-2">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-muted flex items-center justify-center text-foreground font-semibold">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <div className="font-medium text-foreground">{item.step}</div>
+                      <div className="text-muted-foreground">{item.desc}</div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-xs text-muted-foreground leading-relaxed">{content.content}</p>
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-foreground rounded-lg"></div>
+            <svg className="w-8 h-8 border rounded-md" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <mask id="rounded-slashes-mask">
+                  <rect width="100" height="100" fill="white" />
+                  <g transform="rotate(-45 50 50)" fill="black">
+                    <rect x="-20" y="0" width="140" height="20" rx="5" />
+                    <rect x="-20" y="40" width="140" height="20" rx="5" />
+                    <rect x="-20" y="80" width="140" height="20" rx="5" />
+                  </g>
+                </mask>
+              </defs>
+              <rect width="100" height="100" fill="white" mask="url(#rounded-slashes-mask)" />
+            </svg>
             <div>
-              <h1 className="text-xl font-bold text-foreground">TradeFlow</h1>
+              <h1 className="text-xl font-bold text-foreground">Settle Invoice</h1>
               {appId > 0 && <p className="text-xs text-muted-foreground">App ID: {appId}</p>}
             </div>
           </div>
@@ -494,6 +632,12 @@ export default function Home() {
           <div className="bg-destructive/10 border border-destructive/20 text-destructive px-5 py-4 rounded-xl flex items-start gap-3">
             <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
             <span className="text-sm">{error}</span>
+            {details && (
+              <details className="text-sm">
+                <summary className="text-sm">Details</summary>
+                <pre className="text-sm">{JSON.stringify(error, null, 2)}</pre>
+              </details>
+            )}
           </div>
         )}
 
@@ -507,14 +651,15 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <div className="px-6 py-5 border-b border-border">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   All Invoices
                 </h2>
+                <HelpButton contentKey="allInvoices" />
               </div>
               <div className="p-6">
-                {invoices.length === 0 ? (
+                {getPaginatedInvoices().length === 0 ? (
                   <div className="text-center py-16">
                     <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
                       <FileText className="h-6 w-6 text-muted-foreground" />
@@ -523,11 +668,11 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {invoices.map((invoice) => {
+                    {getPaginatedInvoices().map((invoice) => {
                       const status = INVOICE_STATUS[invoice.status as keyof typeof INVOICE_STATUS]
                       const isBuyer = invoice.buyer === activeAddress
                       const isSeller = invoice.seller === activeAddress
-                      const fundingProgress = Math.min(100, Number((invoice.amountRaised * 100n) / invoice.totalAmount))
+                      const fundingProgress = Math.min(100, Number((invoice.amountRaised * 100n) / (invoice.totalAmount + 1n)))
 
                       return (
                         <div key={invoice.id} className="border border-border rounded-xl p-5 hover:border-foreground/20 transition-colors">
@@ -629,12 +774,13 @@ export default function Home() {
                         </div>
                       )
                     })}
+                    <PaginationControls />
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+            {/*<div className="bg-card border border-border rounded-2xl overflow-hidden">
               <div className="px-6 py-5 border-b border-border">
                 <h2 className="text-lg font-semibold text-foreground">How it works</h2>
               </div>
@@ -659,13 +805,14 @@ export default function Home() {
                   ))}
                 </ol>
               </div>
-            </div>
+            </div>*/}
           </div>
 
           <div className="space-y-6">
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <div className="px-6 py-5 border-b border-border">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-foreground">Create Invoice</h2>
+                <HelpButton contentKey="createInvoice" />
               </div>
               <div className="p-6 space-y-4">
                 <div>
@@ -765,8 +912,9 @@ export default function Home() {
             </div>
 
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <div className="px-6 py-5 border-b border-border">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-foreground">Check Investment</h2>
+                <HelpButton contentKey="checkInvestment" />
               </div>
               <div className="p-6 space-y-4">
                 <div className="flex gap-2">
@@ -794,8 +942,9 @@ export default function Home() {
             </div>
 
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <div className="px-6 py-5 border-b border-border">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-foreground">Pending Approvals</h2>
+                <HelpButton contentKey="pendingApprovals" />
               </div>
               <div className="p-6">
                 {pendingInvoices.length === 0 ? (
