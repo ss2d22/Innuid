@@ -7,6 +7,7 @@ import algosdk from 'algosdk'
 import { AlertCircle, CheckCircle2, DollarSign, FileText, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from './components/ThemeToggle'
+import { BuyerAddressComboBox } from './components/BuyerAddressComboBox'
 import { TradeflowClient } from './contracts/Tradeflow'
 import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
 
@@ -616,6 +617,8 @@ export default function Home() {
               <div className="p-6 space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Buyer Address</label>
+                  <BuyerAddressComboBox />
+                  {/*
                   <input
                     type="text"
                     value={buyer}
@@ -623,6 +626,7 @@ export default function Home() {
                     className="w-full bg-background border border-input rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20 transition-all"
                     placeholder="BUYER_ADDRESS..."
                   />
+                  */}
                 </div>
 
                 <div>
